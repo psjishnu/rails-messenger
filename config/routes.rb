@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       get 'users', to: 'users#index'
       post 'users/create'
       delete 'users/:id', to: 'beers#destroy'
+
+      get 'messages', to: 'messages#index', via: :all
     end
   end
   get '*path' , to: 'pages#index'
