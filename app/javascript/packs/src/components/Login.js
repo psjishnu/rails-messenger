@@ -1,6 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import { login } from "../helpers/apiRequest";
+import { navigate } from "hookrouter";
 
 function Login() {
+  const [form, setform] = useState({ username: "", password: "" });
+  const onSubmit = (e) => {
+    e.preventDefault();
+    login({ ...form }).then((res) => {
+      if (res.data.session) {
+        const { session_id, _csrf_token } = res.data.session;
+        sessionStorage.setItem("session_id", session_id);
+        sessionStorage.setItem("_csrf_token", _csrf_token);
+        navigate("/");
+        window.location.reload(false);
+      }
+    });
+  };
   return (
     <>
       <h2 className="ui center aligned large header">
@@ -15,22 +30,38 @@ function Login() {
       <div className="ui placeholder segment">
         <div className="ui two column very relaxed stackable grid">
           <div className="column">
-            <form className="ui form">
+            <form onSubmit={onSubmit} className="ui form">
               <div className="field">
                 <label>Username</label>
                 <div className="ui left icon input">
-                  <input type="text" placeholder="Username" />
+                  <input
+                    value={form.username}
+                    onChange={(e) =>
+                      setform({ ...form, username: e.target.value })
+                    }
+                    type="text"
+                    placeholder="Username"
+                  />
                   <i className="user icon"></i>
                 </div>
               </div>
               <div className="field">
                 <label>Password</label>
                 <div className="ui left icon input">
-                  <input type="text" placeholder="Password" />
+                  <input
+                    value={form.password}
+                    onChange={(e) =>
+                      setform({ ...form, password: e.target.value })
+                    }
+                    type="password"
+                    placeholder="Password"
+                  />
                   <i className="lock icon"></i>
                 </div>
               </div>
-              <button className="ui orange submit button">Login</button>
+              <button type="submit" className="ui orange submit button">
+                Login
+              </button>
             </form>
           </div>
           <div className="middle aligned column">

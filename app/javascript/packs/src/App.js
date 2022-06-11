@@ -1,24 +1,57 @@
-import React from "react";
-import { useRoutes } from "hookrouter";
+import React, { useEffect, useState } from "react";
+import { useRoutes, navigate } from "hookrouter";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import "semantic-ui-css/semantic.min.css";
 import Navbar from "./components/Navbar";
 import "./styles.css";
+import { isLoggedin } from "./helpers/apiRequest";
 
-const routes = {
-  "/": () => <Home />,
+export const AuthContext = React.createContext({
+  user: null,
+});
+
+const publicroutes = {
   "/login": () => <Login />,
 };
-
+const authRoutes = {
+  "/": () => <Home />,
+};
 const App = () => {
-  const routeResult = useRoutes(routes);
+  const [user, setuser] = useState(null);
+  const publicRoutes = useRoutes(publicroutes);
+  const auth = useRoutes(authRoutes);
+  const [loading, setloading] = useState(false);
+  useEffect(() => {
+    setloading(true);
+    isLoggedin().then((res) => {
+      if (res.success) {
+        setuser(res.data.username);
+      } else {
+        navigate("/login");
+      }
+      setloading(false);
+    });
+  }, []);
 
+  const Notfound = () => (
+    <div style={{ width: "100%", textAlign: "center", marginTop: "20%" }}>
+      Error 404: Page not found
+    </div>
+  );
   return (
-    <>
+    <AuthContext.Provider value={{ user }}>
       <Navbar />
-      <div className="ui container">{routeResult}</div>
-    </>
+      {loading ? (
+        <div style={{ width: "100%", textAlign: "center", marginTop: "20%" }}>
+          Loading
+        </div>
+      ) : (
+        <div className="ui container">
+          {!user ? publicRoutes ?? <Notfound /> : auth ?? <Notfound />}
+        </div>
+      )}
+    </AuthContext.Provider>
   );
 };
 

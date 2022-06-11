@@ -6,3 +6,20 @@ export const getMessages = () =>
     method: "get",
     params: `/messages`,
   });
+export const login = (payload) =>
+  fireRequest({
+    payload,
+    method: "post",
+    params: "/sessions",
+  });
+export const isLoggedin = (payload) =>
+  fireRequest({
+    payload,
+    method: "get",
+    params: "/sessions",
+  });
+export const logout = () =>
+  fireRequest({
+    method: "delete",
+    params: "/sessions",
+  });
