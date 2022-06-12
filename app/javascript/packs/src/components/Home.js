@@ -1,13 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { getMessages } from "../helpers/apiRequest";
+import { getMessages, postMessage } from "../helpers/apiRequest";
+import { isEmptyOrSpaces } from "../helpers/functions";
 
 function Home() {
   const [data, setdata] = useState([]);
-  useEffect(() => {
+  const [msg, setmsg] = useState("");
+  const [loading, setloading] = useState(false);
+
+  const getAllMessages = () =>
     getMessages().then((res) => {
       setdata(res.data);
+      document.getElementById("chats").scrollTo(0, document.body.scrollHeight);
+      setloading(false);
     });
+  useEffect(() => {
+    setloading(true);
+    getAllMessages();
   }, []);
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (!isEmptyOrSpaces(msg) && !loading) {
+      setmsg("");
+      setloading(true);
+      postMessage({ body: msg }).then((res) => {
+        if (res.success) {
+          getAllMessages();
+        }
+      });
+    }
+  };
   return (
     <>
       <h4 className="ui center aligned medium icon header">
@@ -18,7 +39,7 @@ function Home() {
       <div className="ui two column grid">
         <div className="twelve wide column">
           <div className="ui fluid raised card chatbox">
-            <div className="content">
+            <div id="chats" className="content chatcontent">
               <div className="ui feed">
                 {data.map((message) => (
                   <div key={message.id} className="event">
@@ -32,11 +53,22 @@ function Home() {
               </div>
             </div>
             <div className="extra content">
-              <form className="ui reply form">
+              <form onSubmit={sendMessage} className="ui reply form">
                 <div className="field">
                   <div className="ui fluid icon input">
-                    <input type="text" placeholder="Enter a message..." />
-                    <i className="bordered inverted orange edit icon"></i>
+                    <input
+                      value={msg}
+                      onChange={(e) => setmsg(e.target.value)}
+                      type="text"
+                      placeholder="Enter a message..."
+                    />
+                    <button
+                      disabled={loading}
+                      className="ui icon button"
+                      type="submit"
+                    >
+                      <i className="inverted orange edit icon"></i>
+                    </button>
                   </div>
                 </div>
               </form>

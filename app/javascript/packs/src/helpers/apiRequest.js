@@ -6,6 +6,12 @@ export const getMessages = () =>
     method: "get",
     params: `/messages`,
   });
+export const postMessage = (payload) =>
+  fireRequest({
+    payload,
+    method: "post",
+    params: `/messages`,
+  });
 export const login = (payload) =>
   fireRequest({
     payload,

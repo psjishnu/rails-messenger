@@ -21,17 +21,24 @@ const App = () => {
   const [user, setuser] = useState(null);
   const publicRoutes = useRoutes(publicroutes);
   const auth = useRoutes(authRoutes);
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
   useEffect(() => {
-    setloading(true);
-    isLoggedin().then((res) => {
-      if (res.success) {
-        setuser(res.data.username);
-      } else {
-        navigate("/login");
-      }
+    if (
+      sessionStorage.getItem("session_id") &&
+      sessionStorage.getItem("_csrf_token")
+    ) {
+      isLoggedin().then((res) => {
+        if (res.success) {
+          setuser(res.data.username);
+        } else {
+          navigate("/login");
+        }
+        setloading(false);
+      });
+    } else {
+      navigate("/login");
       setloading(false);
-    });
+    }
   }, []);
 
   const Notfound = () => (

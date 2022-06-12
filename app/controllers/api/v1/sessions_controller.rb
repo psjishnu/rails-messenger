@@ -1,6 +1,5 @@
 class Api::V1::SessionsController < ApplicationController
-  skip_forgery_protection 
-
+  before_action :require_user , except: [:create]
   def show
     if current_user
       render status: :ok, json: {username: current_user.username}

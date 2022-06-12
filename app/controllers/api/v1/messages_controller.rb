@@ -8,4 +8,18 @@ class Api::V1::MessagesController < ApplicationController
     end
     render json: @result
   end
+
+  def create
+    message = current_user.messages.build(message_params)
+    if message.save
+      render status: :created, json: {msg: "Message send"}
+    end
+  end
+
+  private
+  def message_params
+    params.require(:message).permit(:body)
+  end
+
+
 end

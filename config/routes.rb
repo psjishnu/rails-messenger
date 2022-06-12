@@ -8,6 +8,8 @@ Rails.application.routes.draw do
       delete 'users/:id', to: 'beers#destroy'
 
       get 'messages', to: 'messages#index', via: :all
+      post 'messages', to: 'messages#create'
+      
       resource :sessions, only: %i[show create destroy]
     end
   end

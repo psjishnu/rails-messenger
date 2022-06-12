@@ -18,8 +18,8 @@ function Navbar() {
               href="#"
               onClick={() => {
                 logout().then(() => {
-                  localStorage.removeItem("session_id");
-                  localStorage.removeItem("_csrf_token");
+                  sessionStorage.removeItem("session_id");
+                  sessionStorage.removeItem("_csrf_token");
                   window.location.reload(false);
                 });
               }}
