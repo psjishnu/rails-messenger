@@ -1,17 +1,13 @@
 class Api::V1::MessagesController < ApplicationController
   def index
-    @messages = Message.all
-    @result=[]
-    @messages.each do |message|
-      messageObject={username: message.user.username, id: message.id, body: message.body}
-      @result << messageObject
-    end
-    render json: @result
+    send_all_messages
+    render status: :ok
   end
 
   def create
     message = current_user.messages.build(message_params)
     if message.save
+      send_all_messages
       render status: :created, json: {msg: "Message send"}
     end
   end
@@ -21,5 +17,14 @@ class Api::V1::MessagesController < ApplicationController
     params.require(:message).permit(:body)
   end
 
+  def send_all_messages
+    @messages = Message.all
+    @result=[]
+    @messages.each do |message|
+      messageObject={username: message.user.username, id: message.id, body: message.body}
+      @result << messageObject
+    end
+    ActionCable.server.broadcast('messages', { messages: @result })
+  end
 
 end

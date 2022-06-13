@@ -1,37 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { getMessages, postMessage } from "../helpers/apiRequest";
+import { postMessage } from "../helpers/apiRequest";
 import { isEmptyOrSpaces } from "../helpers/functions";
+import MessagesChannel from "channels/messages_channel";
+import "channels";
 
 function Home() {
   const [data, setdata] = useState([]);
   const [msg, setmsg] = useState("");
   const [loading, setloading] = useState(false);
-
-  const getAllMessages = () =>
-    getMessages().then((res) => {
-      setdata(res.data);
-      document.getElementById("chats").scrollTo(0, document.body.scrollHeight);
-      setloading(false);
-    });
   useEffect(() => {
-    setloading(true);
-    getAllMessages();
+    MessagesChannel.received = (response) => setdata(response?.messages ?? []);
   }, []);
+  useEffect(() => {
+    const messageList = document.getElementById("messages");
+    messages.scrollTo(0, messageList.scrollHeight + 23);
+  }, [data]);
   const sendMessage = (e) => {
     e.preventDefault();
     if (!isEmptyOrSpaces(msg) && !loading) {
       setmsg("");
       setloading(true);
-      postMessage({ body: msg }).then((res) => {
-        if (res.success) {
-          getAllMessages();
-        }
+      postMessage({ body: msg }).then(() => {
+        setloading(false);
       });
     }
   };
   return (
     <>
-      <h4 className="ui center aligned medium icon header">
+      <h4
+        onClick={() =>
+          document
+            .getElementById("messages")
+            .scrollTo(0, window.screen.availHeight)
+        }
+        className="ui center aligned medium icon header"
+      >
         <i className="circular orange coffee icon"></i>
         Say Something
       </h4>
@@ -39,13 +42,13 @@ function Home() {
       <div className="ui two column grid">
         <div className="twelve wide column">
           <div className="ui fluid raised card chatbox">
-            <div id="chats" className="content chatcontent">
+            <div id="messages" className="content">
               <div className="ui feed">
                 {data.map((message) => (
                   <div key={message.id} className="event">
                     <div className="content">
                       <div className="summary">
-                        <em>{message?.username} </em>:{message.body}
+                        <em>{message?.username} </em>:{` ${message.body}`}
                       </div>
                     </div>
                   </div>
