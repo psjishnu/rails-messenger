@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { login } from "../helpers/apiRequest";
 import { navigate } from "hookrouter";
 
@@ -16,6 +16,7 @@ function Login() {
       }
     });
   };
+
   return (
     <>
       <h2 className="ui center aligned large header">
@@ -65,10 +66,13 @@ function Login() {
             </form>
           </div>
           <div className="middle aligned column">
-            <div className="ui big orange disabled button">
+            <button
+              onClick={() => navigate("/signup")}
+              className="ui big orange  button"
+            >
               <i className="signup icon"></i>
               Sign Up
-            </div>
+            </button>
           </div>
         </div>
         <div className="ui vertical divider">Or</div>

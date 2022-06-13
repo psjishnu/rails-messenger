@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { A } from "hookrouter";
-import { AuthContext } from "../App";
 import { logout } from "../helpers/apiRequest";
+import useAuth from "../helpers/useAuthContext";
 
 function Navbar() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   return (
     <div className="ui small inverted menu">
       <div className="ui container">
@@ -33,7 +33,7 @@ function Navbar() {
                 Log in
               </A>
               <div className="item">
-                <A href="#" className="ui primary button">
+                <A href="/signup" className="ui primary button">
                   Sign Up
                 </A>
               </div>

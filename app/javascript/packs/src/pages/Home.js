@@ -8,6 +8,7 @@ function Home() {
   const [data, setdata] = useState([]);
   const [msg, setmsg] = useState("");
   const [loading, setloading] = useState(false);
+
   useEffect(() => {
     MessagesChannel.received = (response) => setdata(response?.messages ?? []);
   }, []);

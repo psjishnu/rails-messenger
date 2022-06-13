@@ -23,3 +23,9 @@ export const logout = () =>
     method: "delete",
     params: "/sessions",
   });
+export const signup = (payload) =>
+  fireRequest({
+    payload,
+    method: "post",
+    params: "/users",
+  });

@@ -5,12 +5,8 @@ Rails.application.routes.draw do
   root 'pages#index'  
   namespace :api do
     namespace :v1 do
-      get 'users', to: 'users#index'
-      post 'users/create'
-      delete 'users/:id', to: 'beers#destroy'
-
-      get 'messages', to: 'messages#index', via: :all
-      post 'messages', to: 'messages#create'
+      resource :users, only: %i[index create]
+      resource :messages, only: %i[index create]
       resource :sessions, only: %i[show create destroy]
     end
   end
